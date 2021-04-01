@@ -1,0 +1,111 @@
+#include <SFML/Graphics.hpp>
+#include <iostream>
+class point {
+public:
+    point() : x{0}, y{0}
+    {}
+    point(double x,double y) : x{x}, y{y}
+    {}
+    double x;
+    double y;
+};
+
+class line : public point {
+public:
+    line() : a{0,0}, b{1,1}
+    {}
+    line(point a, point b) : a{a}, b{b}
+    {}
+    point a;
+    point b;
+};
+
+class figure : public line {
+    public:
+    figure(int n, line a, line b, line c) : n{n}, z {new line[n]{a,b,c}}
+    {}
+
+    ~figure(){
+        delete [] z;
+    };
+    int n;
+    line* z;
+};
+
+int main() {
+    float a =std::rand() % 1000 * 0.00075f;
+    float b =std::rand() % 1000 * 0.00075f;
+    point t1(500,0);
+    point t2(0,1000);
+    point t3(1000,1000);
+    figure* f = new figure(3, {t1,t2}, {t2,t3},{t3,t1});
+
+    sf::RenderWindow window(sf::VideoMode(1000,1000), "lab 7");
+    sf::ConvexShape triangle(3);
+    sf::CircleShape circle(100);
+    
+    triangle.setPoint(0, sf::Vector2f(f->z[0].a.x,f->z[0].a.y));
+    triangle.setPoint(1, sf::Vector2f(f->z[1].a.x,f->z[1].a.y));
+    triangle.setPoint(2, sf::Vector2f(f->z[2].a.x,f->z[2].a.y));
+    
+    triangle.setOrigin(500, 500);
+    triangle.setPosition(500, 500);
+    triangle.setOutlineColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+    triangle.setOutlineThickness(-15);
+    triangle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+    
+    circle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+    circle.setOrigin(100, 100);
+    circle.setPosition(500, 500);
+    
+    while(window.isOpen())
+    {
+        sf::Event event;
+        
+        while (window.pollEvent(event))
+        {
+            switch(event.type)
+            {
+                case sf::Event::Closed:
+                    window.close();
+            }
+        }
+        window.clear(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+        sf::Vector2f pos = circle.getPosition();
+        
+        //triangle.setOutlineColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+        //triangle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+        //circle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+
+        if(pos.y < -2*pos.x+1255 && pos.y > -2*pos.x+1252 )
+        {
+            triangle.setOutlineColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            triangle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            circle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            a = std::rand() % 1000 * 0.00075f;
+            b = std::rand() % 1000 * 0.00075f;
+        }
+        if(pos.y > 885 && pos.y < 888 )
+        {
+            triangle.setOutlineColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            triangle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            circle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            a = std::rand() % 1000 * -0.00075f;
+            b = std::rand() % 1000 * -0.00075f;
+        }
+        if(pos.y > 2*pos.x-745 && pos.y < 2*pos.x-742)
+        {
+            triangle.setOutlineColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            triangle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            circle.setFillColor(sf::Color(std::rand() % 500 ,std::rand() % 500 ,std::rand() % 500 ));
+            a = std::rand() % 1000 * -0.00075f;
+            b = std::rand() % 1000 * -0.00075f;
+        }
+        circle.move(a,b);
+           
+        window.draw(triangle);
+        window.draw(circle);
+        window.display();
+    }
+    return 0;
+}
